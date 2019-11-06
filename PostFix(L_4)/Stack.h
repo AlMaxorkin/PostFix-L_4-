@@ -1,18 +1,25 @@
 #pragma once
 #include <iostream>
-struct comp
+struct Node
 {
 	char data;
-	comp* next;
+	Node* next;
 };
 
 class Stack
 {
-	comp* head;
+	Node* head, * tail;
 	int size;
 public:
 	Stack();
 	~Stack();
-	void push();
+	Node* getTail() { return tail; }
+	Node* getHead() { return head; }
+	int getSize() { return size; }
+	bool isempty();
+	void push(char);
 	void pop();
+	char top();
 };
+
+std::string postfix(std::string);
