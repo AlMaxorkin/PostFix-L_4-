@@ -11,11 +11,9 @@ Stack::Stack()
 
 Stack::~Stack()
 {
-	while (head != NULL)
+	for(int i = 0; i < size; i++)
 	{
-		tail = head->next;
-		delete head;
-		head = tail;
+		pop();
 	}
 }
 
@@ -38,7 +36,10 @@ void Stack::push(char val)
 
 char Stack::top()
 {
-	return tail->data;
+	if (size == 0)
+		return 0;
+	else
+		return tail->data;
 }
 
 void Stack::pop()
@@ -59,15 +60,15 @@ string postfix(string str)
 			res += str[i];
 		else if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
 		{
-			if (stack.getSize() == 0)
+			if (stack.getSize() == 0 || stack.top() == '(')
 				stack.push(str[i]);
-			else if ((str[i] == '*' || str[i] == '/') && (stack.top() == '+' || stack.top() == '-'))
+			else if ((str[i] == '*' || str[i] == '/') && (stack.top() == '+' || stack.top() == '-') 
+				||  (str[i] == '+' || str[i] == '-') && (stack.top() == '+' || stack.top() == '-'))
 				stack.push(str[i]);
 			else if ((str[i] == '+' || str[i] == '-') && (stack.top() == '*' || stack.top() == '/')
-				|| (str[i] == '+' || str[i] == '-') && (stack.top() == '+' || stack.top() == '-')
 				|| (str[i] == '*' || str[i] == '/') && (stack.top() == '*' || stack.top() == '/'))
 			{
-				while (stack.top() != '(')
+				while ((stack.top() != '+' || stack.top() != '-') && stack.getSize() != 0 && stack.top() != '(')
 				{
 					res += stack.top();
 					stack.pop();
@@ -79,20 +80,20 @@ string postfix(string str)
 			stack.push(str[i]);
 		else if (str[i] == ')')
 		{
-			do
+			while (stack.top() != '(')
 			{
-				if(stack.top() != '(')
-					res += stack.top();
+				res += stack.top();
 				stack.pop();
-			} while (stack.top() != '(');
+			} 
+			stack.pop();
 		}
 	}
 	
-	while (stack.getHead != NULL)
+	while(stack.getSize() != 0)
 	{
 		res += stack.top();
 		stack.pop();
-	} 
+	}
 	
 	stack.~Stack();
 	return res;
